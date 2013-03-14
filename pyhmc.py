@@ -12,8 +12,6 @@ def hamiltonian(x, p):
 	E = - math.log(potential(x)) + 1./2. * np.dot(p,p)
 	return(E)
 
-
-
 # Calculate the derivative
 def deriv(x):
 	dx = - x[0]
@@ -34,22 +32,30 @@ def leapfrog(x, p, eps, m):
 
 
 # number of leapfrog steps
-L = 1000
+L = 50
 # step size
 epsilon = 1.
 
 # mass
-m = 1000
+m = 1000.
+
+I = 10
 
 # initialize and initial conditions
+
+xm = np.zeros([M,2])
+xm[0] = x[0]
+
 x = np.zeros([L, 2])
 v = np.zeros([L, 2])
-x[0] = [3, 0]
-v[0] = [0, .05]
-
-for step in range(L-1):
-	x[step + 1], v[step + 1] = leapfrog(x[step], m * v[step], epsilon, m)
+x[L - 1] = [3, 0]
+v[L - 1] = [0, .05]
 
 
-np.savetxt("outputx.txt",x,delimiter=" ")
-np.savetxt("outputv.txt",v,delimiter=" ")
+for i in range(I):
+	x[0] = x[L - 1]
+	v[0] = np.random.multivariate_normal([0, 0], [[1,0], [0,1]]) / m
+	for step in range(L-1):
+		x[step + 1], v[step + 1] = leapfrog(x[step], m * v[step], epsilon, m)
+	np.savetxt("outputx"+str(i)+".txt",x,delimiter=" ")
+
