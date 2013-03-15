@@ -67,7 +67,7 @@ for i in range(I-1):
 	else:
 		xm[i + 1] = xm[i]
 
-	# np.savetxt("outputx"+str(i)+".txt",x,delimiter=" ")
+	# np.savetxt("./output/outputx"+str(i)+".txt",x,delimiter=" ")
 
-np.savetxt("output.txt", xm, delimiter=" ")
+np.savetxt("./output/output.txt", xm, delimiter=" ")
 
