@@ -13,7 +13,7 @@ def leapfrog(q, p, eps):
 # number of leapfrog steps
 L = 50
 # step size
-epsilon = 1.
+epsilon = 0.5
 
 # mass
 m = 20.
@@ -29,10 +29,10 @@ qm = np.zeros([I,2])
 # leapfrog sequence
 q = np.zeros([L, 2])
 p = np.zeros([L, 2])
-q[L - 1] = [3, 0]
+qm[0] = [3, 0]
 
 for i in range(I-1):
-	q[0] = q[L - 1]
+	q[0] = qm[i]
 	p0 = p[L -1]
 	p[0] = np.random.multivariate_normal([0, 0], [[1,0], [0,1]])
 
@@ -48,7 +48,8 @@ for i in range(I-1):
 	else:
 		qm[i + 1] = qm[i]
 
-	# np.savetxt("./output/outputx"+str(i)+".txt",x,delimiter=" ")
+	# np.savetxt("./output/outputx" + str(i) + ".txt", q, delimiter=" ")
+
 
 np.savetxt("./output/output.txt", qm, delimiter=" ")
 
