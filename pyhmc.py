@@ -18,20 +18,20 @@ epsilon = 0.5
 # mass
 m = 20.
 
-# number of momentum kicks
-I = 5000
+# number of samples
+S = 5000
 
 # initialize and initial conditions
 
 # samples
-qm = np.zeros([I,2])
+qm = np.zeros([S,2])
 
 # leapfrog sequence
 q = np.zeros([L, 2])
 p = np.zeros([L, 2])
 qm[0] = [3, 0]
 
-for i in range(I-1):
+for i in range(S-1):
 	q[0] = qm[i]
 	p0 = p[L -1]
 	p[0] = np.random.multivariate_normal([0, 0], [[1,0], [0,1]])
