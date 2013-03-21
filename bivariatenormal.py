@@ -17,3 +17,7 @@ def deriv(q):
 	dy = - q[1]
 	out = np.array([dx, dy])
 	return(out)
+
+# transformation to original scale
+def transform(q):
+	return(q-5)
