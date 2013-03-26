@@ -8,7 +8,7 @@ def leapfrog(q, p, eps, deriv):
 	return(q2, p2)
 
 def hamiltonian(q, p, dens):
-	E = - math.log(dens(q)) + 1./2. *  np.dot(p, p)
+	E = - math.log(dens(q)) + 1. / 2. *  np.dot(p, p)
 	return(E)
 
 def sample(S, L, eps, qi, dens, deriv):
@@ -18,15 +18,15 @@ def sample(S, L, eps, qi, dens, deriv):
 	qm[0] = qi
 	for i in range(S-1):
 		q[0] = qm[i]
-		p0 = p[L -1]
-		p[0] = np.random.multivariate_normal([0, 0], [[1,0], [0,1]])
+		p0 = p[L - 1]
+		p[0] = np.random.multivariate_normal([0, 0], [[1, 0], [0, 1]])
 
 		for step in range(L-1):
 			q[step + 1], p[step + 1] = leapfrog(q[step], p[step], eps, deriv)
 
 		# MH acceptance/rejection
 		Ei = hamiltonian(q[0], p0, dens)
-		Ef = hamiltonian(q[L-1], q[L-1], dens)
+		Ef = hamiltonian(q[L - 1], q[L - 1], dens)
 		alpha = min(1, math.exp(- Ef + Ei))
 		if np.random.random() < alpha:
 			qm[i + 1] = q[L - 1]

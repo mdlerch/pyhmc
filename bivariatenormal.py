@@ -3,7 +3,7 @@ import math
 
 # density
 def density(q):
-	pdf = math.exp((q[0] - 0) ** 2 / 2) * math.exp((q[1] - 0) ** 2 / 2)
+	pdf = math.exp((q[0] - 0) ** 2. / 2.) * math.exp((q[1] - 0) ** 2. / 2.)
 	return(pdf)
 
 # Calculate the derivative of the potential field
@@ -15,4 +15,4 @@ def deriv(q):
 
 # transformation to original scale
 def transform(q):
-	return(q-5)
+	return(q - 5)

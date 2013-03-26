@@ -16,7 +16,7 @@ epsilon = 0.5
 S = 100
 
 
-qm = sample(S, L, epsilon, [3,0], density, deriv)
+qm = sample(S, L, epsilon, [3, 0], density, deriv)
 
 qm = transform(qm)
 
