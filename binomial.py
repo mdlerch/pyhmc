@@ -10,18 +10,13 @@ def ilogit(w):
 	return(pr)
 
 # density
-def density(q):
-	pdf = ilogit(q) ** k * (1 - ilogit(q)) ** (n-k)
+def density(q, y):
+	pdf = ilogit(q) ** y[0] * (1 - ilogit(q)) ** (y[1] - y[0])
 	return(pdf)
 
-# hamiltonian
-def hamiltonian(q, p):
-	E = - math.log(density(q)) + 1./2. *  np.dot(p, p)
-	return(E)
-
 # Calculate the derivative of the potential field
-def deriv(q):
-	dx = - q[0]
-	dy = - q[1]
-	out = np.array([dx, dy])
+def deriv(q, y):
+	p = ilogit(q)
+	factor = (math.exp(q) / (1 + math.exp(q))) ** 2
+	out = (y[0] * 1. / p - (y[1] - y[0]) * 1. / (1. - p)) * factor
 	return(out)
