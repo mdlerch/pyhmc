@@ -1,6 +1,14 @@
+#! /usr/bin/env python2
+
+import argparse
 import math
 import numpy as np
 from iterate import sample
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument("likelihood", help="help on likelihood")
+# args = parser.parse_args()
+# print args.likelihood
 
 B = True
 
