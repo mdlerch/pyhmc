@@ -1,2 +1,4 @@
 *.pyc
 output/
+output.txt
+plot.gpi

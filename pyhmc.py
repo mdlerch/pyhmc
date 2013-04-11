@@ -3,73 +3,103 @@
 import argparse
 import math
 import numpy as np
+import sys
+
 import bivariatenormal
 from iterate import sample
 
+# {{{ parse
+
 parser = argparse.ArgumentParser()
-parser.add_argument("demo", choices=["demo"], nargs="?")
-parser.add_argument("likelihood", nargs="?", choices=["normal", "binomial"])
-parser.add_argument("-S", type=int, help="number of samples (default 1000)")
-parser.add_argument("-L", type=int,
-        help="number of leapfrog steps (default 50")
-parser.add_argument("-E", "--epsilon", type = float,
-        help="time step (default 0.5)")
+
+# specifying the sampler
+## demo -- just sample from a bivariate normal
+parser.add_argument("--demo", action="store_true",
+        help="Sample from a bivariate normal in demo mode")
+## likelihood
+parser.add_argument("likelihood", nargs="?", choices=["normal", "binomial"],
+        metavar="likelihood")
+## prior
+parser.add_argument("prior", nargs="?", choices=["flat1", "flat2"],
+        metavar="prior")
+
+# sampler parameters
+## number of samples
+parser.add_argument("-S", type=int, help="number of samples", default=1000)
+## number of itegrator steps
+parser.add_argument("-L", type=int, help="number of integrator steps",
+		default=10)
+## time step
+parser.add_argument("-E", "--epsilon", type = float, help="time step",
+		default=0.1)
+## initialize the chain
+parser.add_argument("-I", type=float, nargs="+",
+        help="Chain beginning for transformed parameters")
+
+# inputs
+## the data specific to the sampler type
 parser.add_argument("-Y", type = float, nargs="+",
         help="Data. Structure depends on likelihood")
-parser.add_argument("-I", type=float, nargs="+",
-        help="Chain beginning for parameters")
-parser.add_argument("-V", action="store_true",
-        help="Be verbose")
-parser.add_argument("-O", help="Output file")
 
+# outputs
+## output file
+parser.add_argument("-O", help="Output file", default="output.txt")
+
+# additional options
+## verbosity (for trouble shooting)
+parser.add_argument("-V", action="store_true", help="Be verbose")
 
 args = parser.parse_args()
+try:
+	if not (args.demo or args.likelihood):
+		raise Exception
+except:
+	print("Either demo needs to be turned on" +
+	" or likelihood and prior need to be set\n")
+	parser.print_help()
+	sys.exit(1)
 
-if args.S:
-	S = args.S
-else:
-	S = 1000
+try:
+	if not args.demo:
+		raise Exception
+	else:
+		sampler = bivariatenormal.bivariateNormal()
+except:
+	print("Currently, only the demo is available\n")
+	parser.print_help()
+	sys.exit(1)
 
-if args.L:
-	L = args.L
-else:
-	L = 10
+# set run parameters
+## number of samples
+S = args.S
+L = args.L
+epsilon = args.epsilon
 
-if args.epsilon:
-	epsilon = args.epsilon
-else:
-	epsilon = 0.1
-
+# set data
 if args.Y:
 	y = np.array(args.Y)
 else:
-	y = np.array([0, 0])
+	y = sampler.defaulty
 
-if args.demo == "demo":
-	sampler = bivariatenormal.bivariateNormal()
-else:
-	print("I don't know that sampler")
-
+# initialize chain
 if args.I:
 	init = np.array(args.init)
 else:
 	init = sampler.init
 
-if args.V:
-	verbose = True
-else:
-	verbose = False
+# verbosity
+verbose = args.V
 
-if args.O:
-	output = args.O
-else:
-	output = "output.txt"
+# output file
+outfile = args.O
+
+# }}}
 
 ###################
 #  print options  #
 ###################
 
-print("\n**********************************\n")
+print("\n")
 if not args.demo=="demo":
 	print("Likelihood: %s" % args.likelihood)
 	print("Prior: %s" % args.prior)
@@ -81,15 +111,22 @@ print("  Number of samples: %s" % S)
 print("  Steps between each sample: %s" % L)
 print("  Time step size: %s" % epsilon)
 
+print("\nWriting results to %s" % outfile)
 
 
 
-
-
-
-
+######################
+#  Perform sampling  #
+######################
 
 qm = sample(y, S, L, epsilon, init, sampler, verbose)
 
-np.savetxt(output, qm, delimiter=" ")
 
+
+#################
+#  save output  #
+#################
+
+np.savetxt(outfile, qm, delimiter=" ")
+
+# vim:foldmethod=marker
