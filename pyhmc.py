@@ -27,14 +27,15 @@ parser.add_argument("prior", nargs="?", choices=["flat1", "flat2"],
 ## number of samples
 parser.add_argument("-S", type=int, help="number of samples", default=1000)
 ## number of itegrator steps
-parser.add_argument("-L", type=int, help="number of integrator steps",
-		default=10)
+parser.add_argument("-L", type=int, help="number of integrator steps between"+
+        " samples",
+        default=10)
 ## time step
 parser.add_argument("-E", "--epsilon", type = float, help="time step",
 		default=0.1)
 ## initialize the chain
 parser.add_argument("-I", type=float, nargs="+",
-        help="Chain beginning for transformed parameters")
+        help="Chain beginning for canonical parameters")
 
 # inputs
 ## the data specific to the sampler type
@@ -83,7 +84,7 @@ else:
 
 # initialize chain
 if args.I:
-	init = np.array(args.init)
+	init = transform(np.array(args.init))
 else:
 	init = sampler.init
 
