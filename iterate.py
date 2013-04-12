@@ -26,7 +26,11 @@ def sample(y, S, L, eps, qi, sampler, verbose):
 	for i in range(S-1):
 		# start at last sample
 		q[0] = sampler.transform(qm[i])
-		p[0] = np.random.multivariate_normal(sampler.pmu, sampler.psig)
+		if sampler.ldim > 1:
+			p[0] = np.random.multivariate_normal(sampler.pmu, sampler.psig)
+		else:
+			p[0] = np.random.normal(sampler.pmu, sampler.psig)
+
 
 		# perform the integration
 		for step in range(L-1):
