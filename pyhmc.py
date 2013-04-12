@@ -14,41 +14,62 @@ parser = argparse.ArgumentParser()
 
 # specifying the sampler
 ## demo -- just sample from a bivariate normal
-parser.add_argument("--demo", action="store_true",
-        help="Sample from a bivariate normal in demo mode")
+parser.add_argument("--demo",
+                    action="store_true",
+                    help="Sample from a bivariate normal in demo mode")
 ## likelihood
-parser.add_argument("likelihood", nargs="?", choices=["normal", "binomial"],
-        metavar="likelihood")
+parser.add_argument("likelihood",
+                    nargs="?",
+                    choices=["normal", "binomial"],
+                    metavar="likelihood")
 ## prior
-parser.add_argument("prior", nargs="?", choices=["flat1", "flat2"],
-        metavar="prior")
+parser.add_argument("prior",
+                    nargs="?",
+                    choices=["flat1", "flat2"],
+                    metavar="prior")
 
 # sampler parameters
 ## number of samples
-parser.add_argument("-S", type=int, help="number of samples", default=1000)
+parser.add_argument("-S",
+                    type=int,
+                    help="number of samples",
+                    default=1000)
 ## number of itegrator steps
-parser.add_argument("-L", type=int, help="number of integrator steps between"+
-        " samples",
-        default=10)
+parser.add_argument("-L",
+                    type=int,
+                    help="number of integrator steps between samples",
+                    default=10)
 ## time step
-parser.add_argument("-E", "--epsilon", type = float, help="time step",
-		default=0.1)
+parser.add_argument("-E",
+                    "--epsilon",
+                    type = float,
+                    help="time step",
+                    default=0.1)
 ## initialize the chain
-parser.add_argument("-I", type=float, nargs="+",
-        help="Chain beginning for canonical parameters")
+parser.add_argument("-I",
+                    type=float,
+                    nargs="+",
+                    help="Chain beginning for canonical parameters")
 
 # inputs
 ## the data specific to the sampler type
-parser.add_argument("-Y", type = float, nargs="+",
-        help="Data. Structure depends on likelihood")
+parser.add_argument("-Y",
+                    type = float,
+                    nargs="+",
+                    help="Data. Structure depends on likelihood")
 
 # outputs
 ## output file
-parser.add_argument("-O", help="Output file", default="output.txt")
+parser.add_argument("-O",
+                    help="Output file",
+                    default="output.txt")
 
 # additional options
 ## verbosity (for trouble shooting)
-parser.add_argument("-V", action="store_true", help="Be verbose")
+parser.add_argument("-V",
+                    action="store_true",
+                    help="Be verbose")
+
 
 args = parser.parse_args()
 try:
@@ -96,9 +117,7 @@ outfile = args.O
 
 # }}}
 
-###################
-#  print options  #
-###################
+# {{{ print options
 
 print("\n")
 if not args.demo=="demo":
@@ -114,7 +133,7 @@ print("  Time step size: %s" % epsilon)
 
 print("\nWriting results to %s" % outfile)
 
-
+# }}}
 
 ######################
 #  Perform sampling  #
