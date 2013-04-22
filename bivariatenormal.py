@@ -11,6 +11,7 @@ class bivariateNormal:
 	init = np.array([10, 10]) # default intial conditions
 	pmu = [0, 0] # mean of momentum kicks
 	psig = [[1, 0], [0, 1]] # covariance of momentum kicks
+	ll = False # is density calculated on log scale?
 
 	# probability density
 	def density(self, q, y):
