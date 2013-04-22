@@ -4,9 +4,11 @@ import argparse
 import math
 import numpy as np
 import sys
+import os.path
 
 import bivariatenormal
 import binom
+import normal
 from iterate import sample
 
 # {{{ parse
@@ -21,7 +23,7 @@ parser.add_argument("--demo",
 ## likelihood
 parser.add_argument("likelihood",
                     nargs="?",
-                    choices=["binomial"],
+                    choices=["binomial", "normal"],
                     metavar="likelihood",
                     help="Likelihood to use")
 ## prior
@@ -96,6 +98,8 @@ try:
 	if not args.demo:
 		if args.likelihood == "binomial":
 			sampler = binom.binomial()
+		elif args.likelihood == "normal":
+			sampler = normal.normal()
 		else:
 			raise Exception
 	else:
@@ -118,6 +122,10 @@ if args.Y:
 else:
 	y = sampler.defaulty
 
+if args.Y and args.likelihood=="normal":
+	y = sampler.defaulty
+	print("using default data, cannot input normal data via command line")
+
 if args.infile:
 	try:
 		y = sampler.readdata(args.infile[0])
@@ -127,7 +135,7 @@ if args.infile:
 
 # initialize chain
 if args.I:
-	init = transform(np.array(args.init))
+	init = args.I
 else:
 	init = sampler.init
 
@@ -140,6 +148,8 @@ outfile = args.O
 try:
 	if os.path.exists(outfile):
 		raise Exception
+	else:
+		pass
 except:
 	print("output file %s already exists" % outfile)
 	sys.exit(1)
@@ -169,7 +179,7 @@ print("\nWriting results to %s" % outfile)
 #  Perform sampling  #
 ######################
 
-qm = sample(y, S, L, epsilon, init, sampler, verbose)
+qm = sample(y, S, L, epsilon, init, sampler, verbose, sampler.ll)
 
 
 #################
