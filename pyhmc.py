@@ -98,9 +98,10 @@ try:
 			sampler = binom.binomial()
 		else:
 			raise Exception
-		pass
+	else:
+		sampler = bivariatenormal.bivariateNormal()
 except:
-	print("Currently only binomial is available\n" +
+	print("Currently only binomial likelihood is available\n" +
 			"you selected %s" % args.likelihood)
 	parser.print_help()
 	sys.exit(1)
@@ -118,7 +119,11 @@ else:
 	y = sampler.defaulty
 
 if args.infile:
-	y = sampler.readdata(args.infile[0])
+	try:
+		y = sampler.readdata(args.infile[0])
+	except:
+		print("I cannot read the input file %s" % args.infile[0])
+		sys.exit(1)
 
 # initialize chain
 if args.I:
@@ -131,6 +136,14 @@ verbose = args.V
 
 # output file
 outfile = args.O
+
+try:
+	if os.path.exists(outfile):
+		raise Exception
+except:
+	print("output file %s already exists" % outfile)
+	sys.exit(1)
+
 
 # }}}
 
