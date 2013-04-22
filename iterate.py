@@ -9,12 +9,15 @@ def integrator(q, p, y, eps, sampler):
 	return(q2, p2)
 
 # total energy calculation
-def hamiltonian(q, p, y, sampler):
-	E = - math.log(sampler.density(q, y)) + 1. / 2. *  np.dot(p, p)
+def hamiltonian(q, p, y, sampler, ll):
+	if ll:
+		E = - sampler.density(q, y) + 1. / 2. * np.dot(p, p)
+	else:
+		E = - math.log(sampler.density(q, y)) + 1. / 2. *  np.dot(p, p)
 	return(E)
 
 # perform the sampling (performed on transformed scales)
-def sample(y, S, L, eps, qi, sampler, verbose):
+def sample(y, S, L, eps, qi, sampler, verbose, ll):
 	# the samples on canonical scale
 	qm = np.zeros([S, sampler.ldim])
 	# the steps between samples
@@ -42,8 +45,8 @@ def sample(y, S, L, eps, qi, sampler, verbose):
 			  sampler)
 
 		# MH acceptance/rejection
-		Ei = hamiltonian(q[0], p[0], y, sampler)
-		Ef = hamiltonian(q[L - 1], p[L - 1], y, sampler)
+		Ei = hamiltonian(q[0], p[0], y, sampler, ll)
+		Ef = hamiltonian(q[L - 1], p[L - 1], y, sampler, ll)
 		alpha = min(1, math.exp(- Ef + Ei))
 		if verbose:
 			print "Energy_i: %s, %s" % (Ei, q[0])
