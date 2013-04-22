@@ -1,6 +1,4 @@
-# Sampler class of bivariate normal
-# This is for demo mode, simply sample from a bivariate normal distribution
-
+# Sampler class of binomial
 
 import math
 import numpy as np
