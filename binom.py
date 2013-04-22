@@ -9,6 +9,7 @@ class binomial:
 	init = np.array([.5]) # default intial conditions
 	pmu = 0 # mean of momentum kicks
 	psig = 1 # covariance of momentum kicks
+	ll = False
 
 	def readdata(self, fname):
 		fh = open(fname)
@@ -34,7 +35,8 @@ class binomial:
 	def deriv(self, q, y):
 		# one variable so going to go numerically
 		h = .05
-		delta = self.density(q - h, y) - self.density(q + h, y)
+		delta = - math.log(self.density(q - h, y)) + \
+		        math.log(self.density(q + h, y))
 		return(delta/(2 * h))
 
 	def transform(self, q):
