@@ -32,5 +32,130 @@ Bayesian methods that samples from posterior distributions.  Currently
 
 % section about (end)
 
+\section{Usage}
+\label{sec:usage}
+
+\subsection{Demo mode}
+\label{sub:demo_mode}
+
+Demo mode can be set with the flag \texttt{--demo}.  The demo mode can be used
+to sample from a bivariate normal distribution.
+
+Example:
+
+\begin{verbatim}
+pyhmc --demo
+\end{verbatim}
+
+% subsection demo_mode (end)
+
+\subsection{Sampling mode}
+\label{sub:sampling_mode}
+
+A likelihood needs to be selected to run in sampling mode.  Currently, two
+likelihoods are supported: binomial and univariate normal.  To select between
+these likelihoods the argument \texttt{binomial} or \texttt{normal} must be
+provided to \texttt{pyhmc}.  Sampling mode samples from the posterior
+distribution with the specified likelihood and a improper uniform prior on the
+support of the canonical parameters.
+
+Example:
+
+\begin{verbatim}
+pyhmc binomial # sample from a posterior distribution with binomial likelihood
+pyhmc normal # sample from a posterior distribution with normal likelihood
+\end{verbatim}
+
+% subsection sampling_mode (end)
+
+\subsection{Options}
+\label{sub:options}
+
+\texttt{pyhmc} takes many options to tune the sampling algorithm.  These
+options include:
+
+\begin{itemize}
+	\item Number of samples \texttt{-S samples}.  The default value is 1000.  To set 10
+samples with binomial likelihood:
+
+\begin{verbatim}
+	pyhmc binomial -S 10
+\end{verbatim}
+
+	\item Number of integrator steps \texttt{-L steps}.  The default value is
+		10.  To set 5 integrator steps with binomial likelihood:
+
+\begin{verbatim}
+	pyhmc binomial -L 5
+\end{verbatim}
+	
+	\item Time step between integrator steps \texttt{-E step\_size} or
+		\texttt{--epsilon step\_size}.  The default value is
+		0.1.  To set 0.05 time step between integrator steps:
+
+\begin{verbatim}
+	pyhmc binomial -E 0.05 # or pyhmc binomial --epsilon 0.05
+\end{verbatim}
+
+	\item Initial coordinates \texttt{-I q0 [q1]}.  The default value changes
+		depending on the likelihood.  For binomial, input one value, the
+		initial value for $\pi$.  For normal, input two values, the intial
+		value for $\mu$ and the initial value for $\sigma$.  For demo mode,
+		input two values the initial coordinates $y_1$ and $y_2$.  To set the
+		initial value of $\pi$ to 0.6 with binomial likelihood:
+
+\begin{verbatim}
+	pyhmc binomial -I 0.6
+\end{verbatim}
+
+	\item Data \texttt{-Y data0 data1}.  This option is available for binomial
+		sampling and demo mode.  For binomial, input the number of observed
+		successes and total number of observations.  For demo mode, input the
+		two values for the mean vector of the bivariate normal distribution.
+		For binomial likelihood, setting 27 successes out of 50 observations as
+		the data:
+
+\begin{verbatim}
+	pyhmc binomial -Y 27 50
+\end{verbatim}
+
+	\item Data file \texttt{--infile datafile}.  This option is available for
+		binomial and normal sampling.  For binomial, the input file should be a
+		single column of 1's and 0's.  For normal, the input file should be a
+		single column of observations.  Each observation is on it's own row.
+		This option overrides the command line data input.  For a binomial
+		likelihood and data contained in \texttt{infilebinomial.txt}:
+
+\begin{verbatim}
+	pyhmc binomial --infile infilebinomial.txt
+\end{verbatim}
+
+	\item Output file \texttt{-O outfile}.  The default value is
+		\texttt{output.txt}.  This sets the output file to record the samples.
+		If the file currently exists, \texttt{pyhmc} will quit without
+		overwriting the existing file.  For a binomial likelihood to store in
+		\texttt{outfilebinomial.txt}
+
+\begin{verbatim}
+	pyhmc binomial -O outfilebinomial.txt
+\end{verbatim}
+
+	\item Be verbose \texttt{-V}.  After every step, show the current position
+		and momentum (in canonical parameter space) and show the Metropolis
+		Hastings $\alpha$ at sampling time.  For trouble shooting.
+\end{itemize}
+
+\section{Issues}
+\label{sec:issues}
+
+At present normal likelihood sampling is very unstable.  Results should not be
+trusted.
+
+% section issues (end)
+
+% subsection options (end)
+
+% section usage (end)
+
 
 \end{document}
