@@ -171,7 +171,7 @@ print("  Number of samples: %s" % S)
 print("  Steps between each sample: %s" % L)
 print("  Time step size: %s" % epsilon)
 
-print("\nWriting results to %s" % outfile)
+print("\nSampling...")
 
 # }}}
 
@@ -179,6 +179,7 @@ print("\nWriting results to %s" % outfile)
 #  Perform sampling  #
 ######################
 
+# init should be on familiar scale
 qm = sample(y, S, L, epsilon, init, sampler, verbose, sampler.ll)
 
 

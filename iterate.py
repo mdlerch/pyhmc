@@ -25,7 +25,7 @@ def sample(y, S, L, eps, qi, sampler, verbose, ll):
 	# momentum at steps between samples
 	p = np.zeros([L, sampler.ldim])
 	# first sample is init (on canonical scale)
-	qm[0] = sampler.transform(qi)
+	qm[0] = qi
 	for i in range(S-1):
 		# start at last sample
 		q[0] = sampler.transform(qm[i])
