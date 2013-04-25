@@ -27,56 +27,88 @@
 \section{About}
 \label{sec:about}
 
-PyHMC is a tool that utilizes the Hamiltonian Monte Carlo technique for
-Bayesian methods that samples from posterior distributions.  Currently
+\texttt{PyHMC} is a tool that utilizes the Hamiltonian Monte Carlo technique
+for Bayesian methods that samples from posterior distributions.
 
 % section about (end)
 
 \section{Usage}
 \label{sec:usage}
 
+\subsection{Likelihoods}
+\label{sub:likelihoods}
+
+\texttt{PyHMC} supports data with two likelihoods, normal and binomial.  Usage
+and interpretation is provided below.
+
+\subsubsection{Normal likelihood}
+\label{ssub:normal_likelihood}
+
+\texttt{PyHMC} samples the bivariate posterior distribution of $\mu$ and
+$\sigma$ (the mean and standard deviation) given a data set.  The program uses
+improper uniform priors on $\mathbb{R}$ for $\mu$ and $\log(\sigma)$.  The
+underlying code uses the canonical parameterization ($\mu$, $\log(\sigma)$),
+but the user interfaces with the more interpretable ($\mu$, $\sigma$).  To
+perform normal likelihood sample, use \texttt{PyHMC} in \texttt{normal} mode:
+
+\begin{verbatim}
+	pyhmc normal
+\end{verbatim}
+
+% subsubsection normal_likelihood (end)
+
+\subsubsection{Binomial likelihood}
+\label{ssub:binomial_likelihood}
+
+\texttt{PyHMC} samples the posterior distribution of $\pi$ (the true population
+proportion) for binomial likelihood data.  The program uses an improper uniform
+prior from $-\infty$ to $+\infty$ for the canonical parameter $logit(\pi)$
+where $logit$ is log-odds.  The user however interfaces using the standard
+$\pi$, proportion, parameter.  To perform binomial likelihood sampling, use
+\texttt{PyHMC} in \texttt{binomial} mode:
+
+\begin{verbatim}
+	pyhmc binomial
+\end{verbatim}
+
+% subsubsection binomial_likelihood (end)
+
+\subsubsection{Notes}
+\label{ssub:notes}
+
+Unless run in demo mode, one of the above likelihoods must be provided to
+\texttt{PyHMC}.
+
+% subsubsection notes (end)
+
+
+
+% subsection likelihoods (end)
 \subsection{Demo mode}
 \label{sub:demo_mode}
 
-Demo mode can be set with the flag \texttt{--demo}.  The demo mode can be used
-to sample from a bivariate normal distribution.
-
-Example:
+The demo mode can be used to sample from a bivariate normal distribution.  Demo
+mode can be set with the flag \texttt{--demo}:
 
 \begin{verbatim}
 pyhmc --demo
 \end{verbatim}
 
+Using hamiltonian monte carlo is overkill for performing a simple bivariate
+normal.  Still, it is included in \texttt{PyHMC} for demonstration purposes.
+
 % subsection demo_mode (end)
-
-\subsection{Sampling mode}
-\label{sub:sampling_mode}
-
-A likelihood needs to be selected to run in sampling mode.  Currently, two
-likelihoods are supported: binomial and univariate normal.  To select between
-these likelihoods the argument \texttt{binomial} or \texttt{normal} must be
-provided to \texttt{pyhmc}.  Sampling mode samples from the posterior
-distribution with the specified likelihood and a improper uniform prior on the
-support of the canonical parameters.
-
-Example:
-
-\begin{verbatim}
-pyhmc binomial # sample from a posterior distribution with binomial likelihood
-pyhmc normal # sample from a posterior distribution with normal likelihood
-\end{verbatim}
-
-% subsection sampling_mode (end)
 
 \subsection{Options}
 \label{sub:options}
 
-\texttt{pyhmc} takes many options to tune the sampling algorithm.  These
-options include:
+\texttt{PyHMC} takes many options to tune the sampling algorithm.  For some of
+these options, the exact usage and meaning depends on the likelihood or whether
+or not demo mode is engaged.  The options are:
 
-\begin{itemize}
-	\item Number of samples \texttt{-S samples}.  The default value is 1000.  To set 10
-samples with binomial likelihood:
+\begin{itemize} 
+	\item Number of samples \texttt{-S samples}.  The default value is 1000.  
+		To set 10 samples with binomial likelihood:
 
 \begin{verbatim}
 	pyhmc binomial -S 10
@@ -112,7 +144,7 @@ samples with binomial likelihood:
 		sampling and demo mode.  For binomial, input the number of observed
 		successes and total number of observations.  For demo mode, input the
 		two values for the mean vector of the bivariate normal distribution.
-		For binomial likelihood, setting 27 successes out of 50 observations as
+		For binomial likelihood, to set 27 successes out of 50 observations as
 		the data:
 
 \begin{verbatim}
@@ -123,8 +155,8 @@ samples with binomial likelihood:
 		binomial and normal sampling.  For binomial, the input file should be a
 		single column of 1's and 0's.  For normal, the input file should be a
 		single column of observations.  Each observation is on it's own row.
-		This option overrides the command line data input.  For a binomial
-		likelihood and data contained in \texttt{infilebinomial.txt}:
+		This option overrides the command line data input \texttt{-Y}.  For a
+		binomial likelihood and data contained in \texttt{infilebinomial.txt}:
 
 \begin{verbatim}
 	pyhmc binomial --infile infilebinomial.txt
@@ -132,7 +164,7 @@ samples with binomial likelihood:
 
 	\item Output file \texttt{-O outfile}.  The default value is
 		\texttt{output.txt}.  This sets the output file to record the samples.
-		If the file currently exists, \texttt{pyhmc} will quit without
+		If the file currently exists, \texttt{PyHMC} will quit without
 		overwriting the existing file.  For a binomial likelihood to store in
 		\texttt{outfilebinomial.txt}
 
@@ -145,13 +177,61 @@ samples with binomial likelihood:
 		Hastings $\alpha$ at sampling time.  For trouble shooting.
 \end{itemize}
 
-\section{Issues}
-\label{sec:issues}
+\section{Notes}
+\label{sec:notes}
 
-At present normal likelihood sampling is very unstable.  Results should not be
-trusted.
+Sampling the posterior distribution of normal likelihood data with unknown mean
+and variance is difficult. If unexpected results are obtained when performing
+normal likelihood sampling, this probably means that the issued sampling
+parameters result in a sampler that will take an extremely long time to
+converge the stationary distribution.  You may notice that the output samples
+are mostly all the same.  This is because the proposed samples are rejected.
+To get around this issue, consider re-running the sampler with different
+initial coordinates as well as different step sizes (\texttt{-E}) and/or
+different number of integrator steps (\texttt{-L}).
 
-% section issues (end)
+As an example, the included normal data file converges much faster for the
+following options:
+
+\begin{verbatim}
+pyhmc normal --infile infilenormal.txt -L 5 -E 0.01 -I 5 5
+\end{verbatim}
+
+\noindent
+than for the default options.  Future versions of \texttt{PyHMC} may include
+options for automatically varying the time step size for optimal acceptance
+rates.-
+
+
+
+
+% section  (end)
+
+\section{Included files}
+\label{sec:included_files}
+
+The following files are included:
+
+\texttt{pyhmc.py} -- the main program that calls all sub-processes.
+
+\texttt{binom.py} -- contains the class binomial which is needed for binomial
+likelihood sampling
+
+\texttt{normal.py} -- contains the class normal which is needed for normal
+likelihood sampling
+
+\texttt{bivariatenormal.py} -- contains the class bivarateNormal which is
+needed for bivariate normal distribution sampling (ie demo mode).
+
+\texttt{iterate.py}  -- contains the code to perform the mechanics of the
+hamiltonian monte carlo sampling algorithm.
+
+\texttt{infilebinomial.txt} -- an example input file for binomial data.
+
+\texttt{infilenormal.txt} -- an example input file for normal data.
+
+% section included_files (end)
+% section notes (end)
 
 % subsection options (end)
 
